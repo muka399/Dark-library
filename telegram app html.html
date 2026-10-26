@@ -1,0 +1,128 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DARK ELITE FILE MANAGER</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#07110e;color:#ecfff5;font-family:Arial,sans-serif}
+header{padding:24px 18px;background:linear-gradient(135deg,#103c2b,#07110e);border-bottom:1px solid #245c43}
+h1{font-size:23px;margin:0 0 8px}
+.sub{color:#9dc8b2;font-size:12px}
+main{padding:16px;max-width:650px;margin:auto}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.card{background:#10231c;border:1px solid #234c3a;border-radius:15px;padding:17px}
+.label{font-size:12px;color:#a8c9b7}
+.value{font-size:24px;font-weight:bold;margin-top:8px}
+h2{font-size:16px;margin:24px 0 12px}
+.search{width:100%;padding:14px;background:#10231c;border:1px solid #28543f;border-radius:12px;color:white;font-size:14px}
+.subjects{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.subject{background:#10231c;border:1px solid #234c3a;border-radius:13px;padding:15px 10px;text-align:left;color:white;min-height:83px;font-size:13px;cursor:pointer}
+.subject span{display:block;font-size:23px;margin-bottom:9px}
+.subject:active,.action:active{transform:scale(.98)}
+.actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}
+.action{background:#164d36;color:white;border:0;padding:14px;border-radius:12px;font-weight:bold;cursor:pointer}
+.note{font-size:12px;color:#9dc8b2;line-height:1.6;margin:20px 0}
+footer{text-align:center;padding:20px;color:#6e9b83;font-size:11px}
+</style>
+</head>
+<body>
+<header>
+<h1>𓆩 DARK ELITE 𓆪</h1>
+<div class="sub">PREMIUM NURSING FILE MANAGER</div>
+</header>
+<main>
+<div class="stats">
+<div class="card"><div class="label">📁 Total Files</div><div class="value" id="total">0</div></div>
+<div class="card"><div class="label">💾 Storage Used</div><div class="value" id="storage">0 MB</div></div>
+</div>
+
+<h2>🔍 Search Library</h2>
+<input class="search" id="search" placeholder="Search nursing subjects..." oninput="filterSubjects()">
+
+<h2>📚 Subject Library</h2>
+<div class="subjects" id="subjects"></div>
+
+<div class="actions">
+<button class="action" onclick="upload()">📤 Upload File</button>
+<button class="action" onclick="showFiles()">📂 My Files</button>
+<button class="action" onclick="searchHelp()">🔎 Search Files</button>
+<button class="action" onclick="refresh()">🔄 Refresh</button>
+</div>
+
+<p class="note" id="status">Welcome! Select a subject to get started. Backend connection will be configured in the next step.</p>
+<footer>DARK ELITE • NURSING RESOURCES</footer>
+</main>
+
+<script>
+const tg=window.Telegram?.WebApp;
+if(tg){tg.ready();tg.expand();}
+
+const subjects=[
+["BOOKS","📚","Notes PDFs & E-books"],
+["NOTICE","📢","Official Announcements"],
+["DOUBTS","❓","Doubts & Discussion"],
+["CLASSES","🎬","Recorded Classes"],
+["MCQ","🧠","Daily MCQ Challenge"],
+["NORCET","🎯","NORCET Practice"],
+["ADMIN","🏥","Nursing Administration"],
+["EDU","👨‍🏫","Nursing Education"],
+["STATS","📊","Statistics & Stats"],
+["RSRCH","🔬","Nursing Research"],
+["RADIO","🩻","Radiology"],
+["PATHO","🧫","Pathology"],
+["PSY","🧠","Psychiatric Nursing"],
+["CHN","🌍","Community Health Nursing"],
+["MSN","❤️","Medical Surgical Nursing"],
+["CHILD","👶","Child Health Nursing"],
+["OBG","🤰","Obstetrics & Gynaecology"],
+["PHARMA","💊","Pharmacology"],
+["ENDO","🦋","Endocrine System"],
+["HEMATO","🩸","Hematology"]
+];
+
+function render(list){
+const root=document.getElementById("subjects");
+root.innerHTML="";
+list.forEach(s=>{
+const b=document.createElement("button");
+b.className="subject";
+const icon=document.createElement("span");
+icon.textContent=s[1];
+const title=document.createElement("div");
+title.textContent=s[2];
+b.append(icon,title);
+b.onclick=()=>selectSubject(s);
+root.appendChild(b);
+});
+}
+function filterSubjects(){
+const q=document.getElementById("search").value.toLowerCase();
+render(subjects.filter(s=>s.join(" ").toLowerCase().includes(q)));
+}
+function selectSubject(s){
+document.getElementById("status").textContent=
+"Selected: "+s[2]+" ("+s[0]+"). Backend connection will be added next.";
+if(tg)tg.HapticFeedback?.impactOccurred("light");
+}
+function upload(){
+document.getElementById("status").textContent=
+"Upload requires the backend connection. We will configure it next.";
+}
+function showFiles(){
+document.getElementById("status").textContent=
+"Your saved file list will appear after connecting the backend.";
+}
+function searchHelp(){
+document.getElementById("search").focus();
+document.getElementById("status").textContent="Type a subject name in Search Library.";
+}
+function refresh(){
+document.getElementById("status").textContent="Dashboard refreshed. Backend connection is not configured yet.";
+}
+render(subjects);
+</script>
+</body>
+</html>
